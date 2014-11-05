@@ -13,10 +13,13 @@ namespace :apn do
       return
     end
 
-    APN.backend = :resque
-    APN.password = ENV['CERT_PASS']
-    APN.full_certificate_path =  ENV['FULL_CERT_PATH']
-    APN.logger = Rails.logger
+    # load all config variables from the rails initializer
+    # MUST set at least the following:
+    # APN.backend = :resque
+    # APN.password = your_password
+    # APN.full_certificate_path = /vagrant/config/certs/apn_development.pem
+    # APN.logger = Rails.logger
+    require File.expand_path(Rails.root + 'config/initializers/apn_sender.rb')
 
     worker = ::Resque::Worker.new(APN::Jobs::QUEUE_NAME)
 
